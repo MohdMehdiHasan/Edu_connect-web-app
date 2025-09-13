@@ -1,0 +1,347 @@
+/* Global Styles & Resets */
+:root {
+    /* Light theme variables are no longer used but kept for reference */
+    --primary-1: #4facfe;
+    --primary-2: #00f2fe;
+    --accent: #667eea;
+    --muted: #64748b;
+    --card-bg-light: #ffffff;
+    --surface-light: #f8fafc;
+    --success: #10b981;
+    
+    /* Dark & Orange Theme Variables (Applied Globally) */
+    --theme-orange-1: #f57c00;
+    --theme-orange-2: #ffa726;
+    --accent-gradient-orange: linear-gradient(135deg, var(--theme-orange-1) 0%, var(--theme-orange-2) 100%);
+
+    --primary-color-dark: #90caf9; /* This is blue, kept for some minor elements */
+    --secondary-color-dark: #ffd54f; /* Main accent yellow/orange */
+    --text-primary-dark: #f5f5f5;
+    --text-secondary-dark: #bdbdbd;
+    --background-dark: linear-gradient(135deg, #232526 0%, #414345 100%);
+    --card-background-dark: rgba(30, 32, 36, 0.95);
+    --border-radius-dark: 16px;
+    --shadow-dark: 0 8px 32px rgba(0,0,0,0.5);
+    --glass-bg-dark: rgba(40, 44, 52, 0.5);
+    --glass-border-dark: rgba(255, 255, 255, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    transition: background 0.5s ease;
+    background: var(--background-dark);
+    color: var(--text-primary-dark);
+}
+
+/* Page Container Logic */
+.page {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+.page.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- STYLES FOR FILE 1: Login/Signup (Dark Theme) --- */
+#loginSignupPage .container {
+    background: var(--card-background-dark);
+    border-radius: var(--border-radius-dark);
+    box-shadow: var(--shadow-dark);
+    overflow: hidden;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border-dark);
+}
+#loginSignupPage .form-header {
+    background: var(--accent-gradient-orange);
+    color: #1e1e1e; padding: 40px 30px 30px; text-align: center;
+}
+#loginSignupPage .form-header p { color: rgba(30,30,30,0.8); }
+#loginSignupPage .logo {
+    font-size: 2rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+#loginSignupPage .form-tabs { display: flex; margin: 20px 0; }
+#loginSignupPage .tab-btn {
+    flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.1); border: none;
+    color: #ffffff; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px);
+}
+#loginSignupPage .tab-btn:first-child { border-radius: 25px 0 0 25px; }
+#loginSignupPage .tab-btn:last-child { border-radius: 0 25px 25px 0; }
+#loginSignupPage .tab-btn.active { background: rgba(0, 0, 0, 0.2); font-weight: 600; }
+#loginSignupPage .form-content { padding: 40px 30px; }
+#loginSignupPage .form { display: none; }
+#loginSignupPage .form.active { display: block; animation: slideIn 0.3s ease-out; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+#loginSignupPage .form-group { margin-bottom: 20px; }
+#loginSignupPage .form-row { display: flex; gap: 15px; }
+#loginSignupPage .form-row .form-group { flex: 1; }
+#loginSignupPage label { display: block; margin-bottom: 8px; color: var(--text-secondary-dark); font-weight: 500; font-size: 0.9rem; }
+#loginSignupPage input, #loginSignupPage select, #loginSignupPage textarea, #onboardingPage input {
+    width: 100%; padding: 14px 16px; border: 1px solid var(--glass-border-dark); border-radius: 12px;
+    font-size: 1rem; transition: all 0.3s ease; background: var(--glass-bg-dark); color: var(--text-primary-dark);
+}
+#loginSignupPage input:focus, #loginSignupPage select:focus, #loginSignupPage textarea:focus, #onboardingPage input:focus {
+    outline: none; border-color: var(--secondary-color-dark); box-shadow: 0 0 0 3px rgba(255, 213, 79, 0.2); transform: translateY(-1px);
+}
+#loginSignupPage .password-field { position: relative; }
+#loginSignupPage .password-toggle {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--text-secondary-dark); font-size: 1.2rem;
+}
+#loginSignupPage .submit-btn {
+    width: 100%; background: var(--accent-gradient-orange);
+    color: #1e1e1e; padding: 16px; border: none; border-radius: 12px; font-size: 1.1rem;
+    font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
+}
+#loginSignupPage .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 167, 38, 0.3); }
+#loginSignupPage .form-footer { text-align: center; margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--glass-border-dark); color: var(--text-secondary-dark); }
+#loginSignupPage .switch-form { color: var(--secondary-color-dark); text-decoration: none; font-weight: 600; }
+#loginSignupPage .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+#loginSignupPage .checkbox-group input[type="checkbox"] { width: auto; margin: 0; }
+#loginSignupPage .error-message { color: #ef4444; font-size: 0.85rem; margin-top: 5px; display: none; }
+#loginSignupPage .success-message {
+    background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 15px; border-radius: 8px;
+    margin-bottom: 20px; border: 1px solid var(--success); display: none;
+}
+#loginSignupPage .loading {
+    display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- STYLES FOR ONBOARDING --- */
+#onboardingPage .container {
+    width:100%;max-width:760px;background:var(--card-background-dark);
+    border-radius:var(--border-radius-dark);box-shadow:var(--shadow-dark);overflow:hidden;animation:slideUp .6s ease-out;
+    border: 1px solid var(--glass-border-dark);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#onboardingPage .form-header{ position: relative; padding:36px 36px 22px;background:var(--accent-gradient-orange);color:#1e1e1e;text-align:center; }
+#onboardingPage .form-header .welcome-text { color: rgba(30,30,30,0.8); }
+#onboardingPage .logo{ font-weight:800; font-size:2rem; letter-spacing:1px; text-shadow:0 2px 12px rgba(0,0,0,0.1); display:inline-flex; align-items:center; gap:10px }
+#onboardingPage .form-body{display:flex;gap:0;align-items:stretch}
+#onboardingPage .left-panel{flex:1;padding:28px 34px}
+#onboardingPage .progress-row{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
+#onboardingPage .progress-dots{display:flex;gap:12px;margin-top:8px}
+#onboardingPage .progress-dot{width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,0.25);cursor:pointer;transition:all .28s}
+#onboardingPage .progress-dot.active{background:white;transform:scale(1.25);box-shadow:0 6px 18px rgba(0,0,0,0.18)}
+#onboardingPage .progress-dot.completed{background:var(--success)}
+#onboardingPage .step-counter{color:rgba(255,255,255,0.9);margin-top:8px;font-weight:600}
+#onboardingPage .form-content{padding:28px 34px 36px}
+#onboardingPage .onboarding-step{display:none;animation:fadeIn .45s ease-out}
+#onboardingPage .onboarding-step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#onboardingPage .step-header{text-align:left;margin-bottom:22px}
+#onboardingPage .step-title{font-size:1.45rem;color:var(--text-primary-dark);font-weight:800;margin-bottom:6px}
+#onboardingPage .step-subtitle{color:var(--text-secondary-dark);font-size:0.98rem}
+#onboardingPage .option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+#onboardingPage .option-card{
+    background:var(--glass-bg-dark); border:1px solid var(--glass-border-dark); border-radius:14px; padding:18px 16px;
+    text-align:left; cursor:pointer; transition: all .22s; display:flex; align-items:center; color: var(--text-primary-dark);
+    gap:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#onboardingPage .option-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.2);border-color:var(--secondary-color-dark)}
+#onboardingPage .option-card.selected{ background:var(--accent-gradient-orange); color:#1e1e1e; border-color:transparent; box-shadow:0 10px 30px rgba(255, 167, 38, 0.2); }
+#onboardingPage .option-icon{font-size:1.9rem}
+#onboardingPage .option-text{font-weight:600}
+#onboardingPage .mood-slider{display:flex;gap:10px;margin-top:12px}
+#onboardingPage .mood-option{ flex:1; background:var(--glass-bg-dark); padding:16px; border-radius:12px; text-align:center; cursor:pointer; transition:all .2s; border:1px solid var(--glass-border-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: var(--text-primary-dark); }
+#onboardingPage .mood-option:hover{transform:translateY(-4px); border-color: var(--secondary-color-dark);}
+#onboardingPage .mood-option.selected{ background:var(--accent-gradient-orange); color:#1e1e1e; box-shadow:0 8px 30px rgba(255, 167, 38, 0.2) }
+#onboardingPage .mood-emoji{font-size:1.9rem}
+#onboardingPage .mood-text{font-weight:700;margin-top:8px;font-size:0.95rem}
+#onboardingPage .subjects-section{margin-top:12px}
+#onboardingPage .subjects-title{font-weight:800;color:var(--text-primary-dark);margin-bottom:12px}
+#onboardingPage .subjects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#onboardingPage .subject-tag{ padding:12px; border-radius:10px; background:var(--glass-bg-dark); border:1px solid var(--glass-border-dark); cursor:pointer; text-align:center; font-weight:700; transition: all .22s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: var(--text-primary-dark); }
+#onboardingPage .subject-tag:hover{transform:translateY(-3px); border-color: var(--secondary-color-dark);}
+#onboardingPage .subject-tag.selected{ background:var(--accent-gradient-orange); color:#1e1e1e; border-color:transparent; box-shadow:0 8px 24px rgba(255, 167, 38, 0.2) }
+#onboardingPage .step-navigation{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:20px}
+#onboardingPage .nav-btn{ padding:12px 20px; border-radius:10px; border:none; font-weight:800; cursor:pointer; transition:all .2s }
+#onboardingPage .nav-btn.secondary{ background:transparent; color:var(--text-secondary-dark); border:1px solid var(--glass-border-dark); }
+#onboardingPage .nav-btn.secondary:hover { border-color: var(--text-primary-dark); color: var(--text-primary-dark); }
+#onboardingPage .nav-btn.primary{ background:var(--accent-gradient-orange); color:#1e1e1e; font-weight: 700; }
+#onboardingPage .nav-btn:disabled{opacity:.5;cursor:not-allowed;transform:none; background: var(--glass-bg-dark); color: var(--text-secondary-dark);}
+#onboardingPage .completion-message{text-align:center;padding:18px}
+#onboardingPage .completion-title{font-weight:900;font-size:1.9rem;background:var(--accent-gradient-orange);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+#onboardingPage .completion-text{color:var(--text-secondary-dark);margin-bottom:14px}
+#onboardingPage .form-group { position: relative; }
+#autocomplete-list {
+    position: absolute;
+    border: 1px solid var(--glass-border-dark);
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-background-dark);
+    border-radius: 0 0 12px 12px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+#autocomplete-list div {
+    padding: 12px 16px;
+    cursor: pointer;
+    background-color: transparent;
+    border-bottom: 1px solid var(--glass-border-dark);
+    color: var(--text-primary-dark);
+    transition: background-color 0.2s;
+}
+#autocomplete-list div:last-child {
+    border-bottom: none;
+}
+#autocomplete-list div:hover {
+    background-color: var(--glass-bg-dark);
+}
+#autocomplete-list .active {
+    background-color: var(--secondary-color-dark);
+    color: #1e1e1e;
+}
+
+/* --- STYLES: Dashboard --- */
+#dashboardPage .dashboard-container { max-width: 1200px; margin: 0 auto; display: grid; gap: 24px; width: 100%; }
+#dashboardPage .welcome-header {
+    background: var(--card-background-dark); backdrop-filter: blur(10px); border: 1px solid var(--glass-border-dark);
+    padding: 32px; border-radius: var(--border-radius-dark); text-align: center; box-shadow: var(--shadow-dark);
+    animation: slideDown 0.8s ease-out;
+}
+#dashboardPage .welcome-title {
+    font-size: 2.5rem; margin-bottom: 12px; background: linear-gradient(135deg, var(--secondary-color-dark), #f57c00);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+#dashboardPage .welcome-subtitle { font-size: 1.2rem; color: var(--text-secondary-dark); font-weight: 500; }
+#dashboardPage .dynamic-mood-message { margin-top: 16px; padding: 16px 24px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease; animation: pulse 2s infinite; }
+#dashboardPage .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+#dashboardPage .main-content, #dashboardPage .sidebar { display: grid; gap: 24px; }
+#dashboardPage .dashboard-card {
+    background: var(--card-background-dark); backdrop-filter: blur(10px); border: 1px solid var(--glass-border-dark);
+    padding: 24px; border-radius: var(--border-radius-dark); box-shadow: var(--shadow-dark);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#dashboardPage .dashboard-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+#dashboardPage .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+#dashboardPage .video-carousel { display: flex; gap: 16px; overflow-x: auto; padding: 8px 0; scrollbar-width: none; -ms-overflow-style: none; }
+#dashboardPage .video-carousel::-webkit-scrollbar { display: none; }
+#dashboardPage .video-card { min-width: 280px; background: var(--glass-bg-dark); border: 1px solid var(--glass-border-dark); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; }
+#dashboardPage .video-card:hover { transform: scale(1.02); background: rgba(255, 213, 79, 0.08); }
+#dashboardPage .video-thumbnail { width: 100%; height: 120px; background: linear-gradient(45deg, #ff6b6b, #ffa726); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 12px; }
+#dashboardPage .study-plan-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--glass-bg-dark); border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--secondary-color-dark); transition: opacity 0.3s ease; }
+#dashboardPage .study-plan-item.completed { opacity: 0.5; text-decoration: line-through; }
+#dashboardPage .task-checkbox { min-width: 20px; height: 20px; border: 2px solid var(--secondary-color-dark); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+#dashboardPage .task-checkbox.completed { background: var(--success); border-color: var(--success); }
+#dashboardPage .task-checkbox.completed::after { content: '✓'; color: white; font-weight: bold; }
+#dashboardPage .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; margin: 16px 0; }
+#dashboardPage .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--secondary-color-dark)); transition: width 0.8s ease; }
+#dashboardPage .add-task-form { display: flex; gap: 10px; margin-top: 16px; }
+#dashboardPage .add-task-form input { flex-grow: 1; background: var(--glass-bg-dark); border: 1px solid var(--glass-border-dark); color: var(--text-primary-dark); padding: 10px; border-radius: 8px; }
+#dashboardPage .add-task-form button { background: var(--secondary-color-dark); color: #1e1e1e; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+#dashboardPage .zone-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#dashboardPage .strength-zone { background: linear-gradient(135deg, #388e3c, #43a047); color: #fff; padding: 20px; border-radius: 12px; text-align: center; }
+#dashboardPage .weakness-zone { background: var(--accent-gradient-orange); color: #fff; padding: 20px; border-radius: 12px; text-align: center; }
+#dashboardPage .mood-suggestion-card { background: linear-gradient(135deg, #3949ab, #7b1fa2); color: #fff; padding: 24px; border-radius: 16px; text-align: center; animation: glow 3s ease-in-out infinite; }
+#dashboardPage .mood-emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+#dashboardPage .suggestion-action { background: rgba(255,255,255,0.2); border: none; color: white; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; margin-top: 16px; transition: all 0.3s ease; }
+#dashboardPage .suggestion-action:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+#dashboardPage .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 16px; margin: 16px 0; }
+#dashboardPage .stat-item { text-align: center; padding: 16px; background: var(--glass-bg-dark); border-radius: 12px; }
+#dashboardPage .stat-value { font-size: 2rem; font-weight: 700; color: var(--secondary-color-dark); display: block; }
+#dashboardPage .stat-label { font-size: 0.9rem; color: var(--text-secondary-dark); margin-top: 4px; }
+#dashboardPage .badges-container { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+#dashboardPage .badge { padding: 8px 16px; background: linear-gradient(135deg, #ffd700, #ffa500); color: #232526; border-radius: 20px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3); animation: bounce 2s infinite; }
+
+/* --- STYLES: Back Buttons (Dark Theme) --- */
+.back-btn {
+    padding: 10px 18px;
+    border-radius: 25px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+#onboardingPage .back-btn {
+    background: rgba(0, 0, 0, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+#onboardingPage .back-btn:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+#dashboardPage .back-btn {
+    background: var(--glass-bg-dark);
+    color: var(--text-secondary-dark);
+    border-color: var(--glass-border-dark);
+    margin-top: -10px; /* Adjust position */
+    margin-bottom: 20px;
+}
+#dashboardPage .back-btn:hover {
+    color: var(--text-primary-dark);
+    border-color: var(--secondary-color-dark);
+}
+
+/* --- STYLES: Interactive Motivation Modal --- */
+.motivation-modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;
+}
+.motivation-modal {
+    background: var(--card-background-dark); border: 1px solid var(--glass-border-dark); border-radius: var(--border-radius-dark);
+    box-shadow: var(--shadow-dark); width: 90%; max-width: 500px; padding: 24px; animation: slideUp 0.4s ease-out;
+    position: relative; color: var(--text-primary-dark);
+}
+.motivation-modal-close {
+    position: absolute; top: 15px; right: 15px; background: var(--glass-bg-dark); border: 1px solid var(--glass-border-dark);
+    color: var(--text-primary-dark); width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+    font-size: 1.2rem; line-height: 28px; text-align: center;
+}
+.motivation-modal-title { font-size: 1.8rem; margin-bottom: 20px; }
+.timer-display { font-size: 4rem; font-weight: 700; text-align: center; margin: 20px 0; color: var(--secondary-color-dark); }
+.timer-controls button, .motivation-btn {
+    background: var(--secondary-color-dark); color: #1e1e1e; border: none; padding: 12px 24px;
+    border-radius: 25px; font-weight: 600; cursor: pointer; margin: 5px; transition: transform 0.2s, background 0.2s;
+}
+.timer-controls button:hover, .motivation-btn:hover { transform: scale(1.05); }
+.motivation-feature { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border-dark); }
+.streak-display { text-align: center; font-size: 1.1rem; }
+.prompt-display { background: var(--glass-bg-dark); padding: 15px; border-radius: 10px; min-height: 50px; font-style: italic; }
+
+/* Animations */
+@keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(33, 150, 243, 0.3); } 50% { box-shadow: 0 0 30px rgba(33, 150, 243, 0.6); } }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-5px); } 60% { transform: translateY(-3px); } }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page { padding: 10px; }
+    #dashboardPage .dashboard-grid, #dashboardPage .zone-container { grid-template-columns: 1fr; }
+    #onboardingPage .option-grid {grid-template-columns: 1fr; }
+    #onboardingPage .subjects-grid {grid-template-columns: repeat(2, 1fr); }
+    #loginSignupPage .form-row { flex-direction: column; gap: 0; }
+}
+
+/* --- STYLES FOR SPLASH CURSOR --- */
+.cursor-splash {
+    position: fixed; pointer-events: none; width: 25px; height: 25px;
+    border-radius: 50%; transform: translate(-50%, -50%); z-index: 9999;
+    animation: splash-animation 0.6s forwards ease-out;
+}
+@keyframes splash-animation {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+

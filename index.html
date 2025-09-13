@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Welcome</title>
+    
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Supabase Client Library (needs to be loaded before your script.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div id="loginSignupPage" class="page active">
+        <div class="container">
+            <div class="form-header">
+                <div class="logo">📚 EduConnect</div>
+                <p>Connect, Learn, and Grow Together</p>
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="auth_switchTab('login', event)">Login</button>
+                    <button class="tab-btn" onclick="auth_switchTab('signup', event)">Sign Up</button>
+                </div>
+            </div>
+            <div class="form-content">
+                <div class="success-message" id="successMessage">🎉 Account created successfully! You can now log in.</div>
+                <form class="form active" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="loginPassword" required>
+                            <button type="button" class="password-toggle" onclick="auth_togglePassword('loginPassword', event)">👁</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Sign In</button>
+                </form>
+                <form class="form" id="signupForm">
+                    <div class="form-row">
+                        <div class="form-group"><label for="firstName">First Name</label><input type="text" id="firstName" required></div>
+                        <div class="form-group"><label for="lastName">Last Name</label><input type="text" id="lastName" required></div>
+                    </div>
+                    <div class="form-group"><label for="signupEmail">Email Address</label><input type="email" id="signupEmail" required></div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="signupPassword" required><button type="button" class="password-toggle" onclick="auth_togglePassword('signupPassword', event)">👁</button>
+                        </div>
+                        <div class="error-message" id="signupPasswordError">Password must be at least 8 characters with uppercase, lowercase, and number.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="password-field">
+                            <input type="password" id="confirmPassword" required><button type="button" class="password-toggle" onclick="auth_togglePassword('confirmPassword', event)">👁</button>
+                        </div>
+                         <div class="error-message" id="confirmPasswordError"></div>
+                    </div>
+                     <div class="checkbox-group">
+                         <input type="checkbox" id="agreeTerms" required>
+                         <label for="agreeTerms">I agree to the Terms of Service</label>
+                     </div>
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+                <div class="form-footer">
+                    <p id="switchText">Don't have an account? <a href="#" class="switch-form" onclick="auth_switchTab('signup', event)">Sign up here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="onboardingPage" class="page">
+        <div class="container">
+            <div class="form-header">
+                 <button class="back-btn" onclick="goBack('onboarding')">← Back to Login</button>
+                <div class="logo">🎯 Personalize Your Journey</div>
+                <div class="welcome-text">Quick setup to personalize your dashboard.</div>
+                <div class="progress-row">
+                    <div class="progress-dots">
+                        <div class="progress-dot active" id="dot0"></div><div class="progress-dot" id="dot1"></div><div class="progress-dot" id="dot2"></div><div class="progress-dot" id="dot3"></div><div class="progress-dot" id="dot4"></div>
+                    </div>
+                    <div class="step-counter">Step <span id="currentStep">1</span> of 5</div>
+                </div>
+            </div>
+            <div class="form-body">
+                <div class="left-panel">
+                    <div class="form-content">
+                        <div class="onboarding-step active" id="step0">
+                             <div class="step-header"><div class="step-title">Your Education Level 🎓</div><div class="step-subtitle">Let us know where you are in your journey.</div></div>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="onboarding_selectEducationLevel(this,'High School')"><div class="option-icon">🏫</div><div class="option-text">High School</div></div>
+                                <div class="option-card" onclick="onboarding_selectEducationLevel(this,'Undergraduate')"><div class="option-icon">🏛️</div><div class="option-text">Undergraduate</div></div>
+                                <div class="option-card" onclick="onboarding_selectEducationLevel(this,'Postgraduate')"><div class="option-icon">📜</div><div class="option-text">Postgraduate</div></div>
+                                <div class="option-card" onclick="onboarding_selectEducationLevel(this,'Other')"><div class="option-icon">✏️</div><div class="option-text">Other</div></div>
+                            </div>
+                        </div>
+
+                        <div class="onboarding-step" id="step1">
+                            <div class="step-header"><div class="step-title">Your Institution 🏛️</div><div class="step-subtitle">Tell us where you study.</div></div>
+                            <div class="form-group">
+                                <label for="institutionName">Institution Name</label>
+                                <input type="text" id="institutionName" placeholder="e.g., Amity university" onkeyup="onboarding_handleInstitutionInput(event)">
+                                <div id="autocomplete-list"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label for="city">City</label><input type="text" id="city"></div>
+                                <div class="form-group"><label for="state">State / Province</label><input type="text" id="state"></div>
+                            </div>
+                        </div>
+
+                        <div class="onboarding-step" id="step2">
+                            <div class="step-header"><div class="step-title">How do you learn best? 🧠</div><div class="step-subtitle">Pick the option that feels most natural.</div></div>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="onboarding_selectLearningStyle(this,'reading')"><div class="option-icon">📖</div><div class="option-text">Reading notes/diagrams</div></div>
+                                <div class="option-card" onclick="onboarding_selectLearningStyle(this,'visual')"><div class="option-icon">🎥</div><div class="option-text">Watching videos</div></div>
+                                <div class="option-card" onclick="onboarding_selectLearningStyle(this,'auditory')"><div class="option-icon">🎙️</div><div class="option-text">Listening to explanations</div></div>
+                                <div class="option-card" onclick="onboarding_selectLearningStyle(this,'kinesthetic')"><div class="option-icon">✍️</div><div class="option-text">Hands-on activities</div></div>
+                            </div>
+                        </div>
+
+                        <div class="onboarding-step" id="step3">
+                            <div class="step-header"><div class="step-title">Let's talk about your subjects 📚</div><div class="step-subtitle">Select subjects you're confident in and those you find challenging.</div></div>
+                            <div class="subjects-section">
+                                <div class="subjects-title">✨ Confident Subjects</div>
+                                <div class="subjects-grid">
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'confident')" data-subject="Math">Math</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'confident')" data-subject="Science">Science</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'confident')" data-subject="English">English</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'confident')" data-subject="History">History</div>
+                                </div>
+                            </div>
+                            <div class="subjects-section" style="margin-top:18px">
+                                <div class="subjects-title">💪 Challenging Subjects</div>
+                                <div class="subjects-grid">
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'challenging')" data-subject="Math">Math</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'challenging')" data-subject="Science">Science</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'challenging')" data-subject="English">English</div>
+                                    <div class="subject-tag" onclick="onboarding_toggleSubject(this,'challenging')" data-subject="History">History</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="onboarding-step" id="step4">
+                            <div class="completion-message">
+                                <div class="completion-title">Awesome! You're ready 🎉</div>
+                                <div class="completion-text">We've prepared your personalized learning dashboard.</div>
+                                <div id="summaryCards" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;text-align:left;"></div>
+                                <div style="margin-top:18px"><button class="nav-btn primary" onclick="finishOnboarding()">Go to My Dashboard →</button></div>
+                            </div>
+                        </div>
+                        <div class="step-navigation" id="navigation">
+                            <button class="nav-btn secondary" id="prevBtn" onclick="onboarding_previousStep()" disabled>← Previous</button>
+                            <button class="nav-btn primary" id="nextBtn" onclick="onboarding_nextStep()" disabled>Next →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboardPage" class="page">
+        <div class="dashboard-container">
+            <div class="welcome-header">
+                <h1 class="welcome-title">Good Morning, Alex! 👋</h1>
+                <p class="welcome-subtitle">Ready to conquer your learning goals today?</p>
+                <div class="dynamic-mood-message"></div>
+            </div>
+
+            <div style="text-align: center;">
+                 <button class="back-btn" onclick="goBack('dashboard')">← Edit Preferences</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="main-content">
+                    <div class="dashboard-card">
+                        <h2 class="card-title">🔥 Motivation Boost</h2>
+                        <div class="video-carousel">
+                            <div class="video-card" onclick="motivation_openModal('procrastination')">
+                                <div class="video-thumbnail">🎯</div>
+                                <h4>Beat Procrastination</h4>
+                                <p>Break down your tasks</p>
+                            </div>
+                            <div class="video-card" onclick="motivation_openModal('creativity')">
+                                <div class="video-thumbnail">💡</div>
+                                <h4>Boost Creativity</h4>
+                                <p>Get new ideas</p>
+                            </div>
+                            <div class="video-card" onclick="motivation_openModal('focus')">
+                                <div class="video-thumbnail">🧘</div>
+                                <h4>Stay Focused</h4>
+                                <p>Start a deep work session</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h2 class="card-title">📚 Today's Study Plan</h2>
+                        <div class="progress-bar"><div class="progress-fill" id="todoProgressFill" style="width: 0%"></div></div>
+                        <p id="todoProgressText" style="text-align: center; margin-bottom: 16px; font-weight: 600;">
+                            Add a task to get started!
+                        </p>
+                        <div id="todoListContainer">
+                            </div>
+                        <div class="add-task-form">
+                            <input type="text" id="todoInput" placeholder="e.g., Review Chapter 3">
+                            <button id="addTodoBtn">Add Task</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h2 class="card-title">⚖️ Performance Zones</h2>
+                        <div class="zone-container">
+                            <div class="strength-zone"><h3>💪 Strength Zone</h3><p></p><button id="advancedChallengeBtn" class="suggestion-action">Take Advanced Challenge</button></div>
+                            <div class="weakness-zone"><h3>🎯 Growth Zone</h3><p></p><button id="extraHelpBtn" class="suggestion-action">Get Extra Help</button></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                     <div class="dashboard-card" id="userDetailsCard">
+                        <h2 class="card-title">🎓 Your Details</h2>
+                        <div id="userDetailsContent" style="font-size: 0.95rem; color: var(--text-secondary-dark);"></div>
+                        <button class="suggestion-action" onclick="goBack('dashboard')" style="margin-top: 20px; width: 100%;">Edit Details</button>
+                    </div>
+                    <div class="mood-suggestion-card">
+                       </div>
+                    <div class="dashboard-card">
+                        <h2 class="card-title">🏆 Your Stats</h2>
+                        <div class="stats-container">
+                            <div class="stat-item"><span id="xpValue" class="stat-value">0</span><span class="stat-label">XP Points</span></div>
+                            <div class="stat-item"><span id="streakValue" class="stat-value">0</span><span class="stat-label">Day Streak</span></div>
+                        </div>
+                        <div class="badges-container">
+                            <a href="https://chat.openai.com/" target="_blank" style="text-decoration: none;">
+                                <span class="badge">🔍 Explorer</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="motivation-modal-overlay" id="motivationModalOverlay">
+        <div class="motivation-modal" id="motivationModal">
+            <button class="motivation-modal-close" onclick="closeModal()">×</button>
+            <h2 class="motivation-modal-title" id="motivationModalTitle"></h2>
+            <div class="motivation-modal-content" id="motivationModalContent">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Daily Mood Check Modal -->
+    <div class="motivation-modal-overlay" id="dailyMoodModalOverlay">
+        <div class="motivation-modal" id="dailyMoodModal">
+            <h2 class="motivation-modal-title">How are you feeling today? 😊</h2>
+            <p class="step-subtitle" style="text-align: center; margin-bottom: 20px;">This helps us personalize your dashboard.</p>
+            <div class="mood-slider">
+                <div class="mood-option" onclick="dailyMood_selectMood('motivated')"><div class="mood-emoji">😍</div><div class="mood-text">Super motivated</div></div>
+                <div class="mood-option" onclick="dailyMood_selectMood('okay')"><div class="mood-emoji">🙂</div><div class="mood-text">Feeling okay</div></div>
+                <div class="mood-option" onclick="dailyMood_selectMood('bored')"><div class="mood-emoji">😴</div><div class="mood-text">Low energy / bored</div></div>
+                <div class="mood-option" onclick="dailyMood_selectMood('stressed')"><div class="mood-emoji">😟</div><div class="mood-text">Stressed</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
+
