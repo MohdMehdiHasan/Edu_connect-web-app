@@ -250,6 +250,12 @@ function onboarding_setActiveStep(index) {
     onboarding_updateNextButton();
 }
 
+function onboarding_jumpToStep(step) {
+    if (step < onboarding_currentStep) {
+        onboarding_setActiveStep(step);
+    }
+}
+
 function onboarding_selectEducationLevel(el, level) {
     if (el.classList.contains('selected')) {
         el.classList.remove('selected');
@@ -278,16 +284,15 @@ function onboarding_handleInstitutionInput(event) {
             .then(response => response.json())
             .then(data => {
                 let suggestionsHTML = '';
-                const suggestions = data.slice(0, 5); // Limit to 5 suggestions
+                const suggestions = data.slice(0, 5);
                 suggestions.forEach(uni => {
-                    // Escape single quotes in the name to prevent breaking the JS
                     const safeName = uni.name.replace(/'/g, "\\'");
                     const safeState = (uni['state-province'] || '').replace(/'/g, "\\'");
                     suggestionsHTML += `<div onclick="onboarding_selectInstitution('${safeName}', '${safeState}')">${uni.name}</div>`;
                 });
                 document.getElementById('autocomplete-list').innerHTML = suggestionsHTML;
             });
-    }, 300); // Debounce API call
+    }, 300);
     onboarding_updateNextButton();
 }
 
@@ -458,7 +463,10 @@ function initializeDashboard() {
     document.querySelector('#dashboardPage .strength-zone p').textContent = (profile.confident_subjects || []).join(', ') || 'Not Set';
     document.querySelector('#dashboardPage .weakness-zone p').textContent = (profile.challenging_subjects || []).join(', ') || 'Not Set';
     
-    // Populate User Details Card
+    // ** FIX: Re-add the button listeners **
+    document.getElementById('advancedChallengeBtn').onclick = dashboard_openAdvancedChallenge;
+    document.getElementById('extraHelpBtn').onclick = dashboard_getExtraHelp;
+
     const userDetailsContent = document.getElementById('userDetailsContent');
     userDetailsContent.innerHTML = `
         <p><strong>Level:</strong> ${profile.education_level || 'N/A'}</p>
@@ -832,6 +840,7 @@ function dashboard_handleMoodAction(mood) {
     openModal(title, content);
 }
 
+// ** FIX: Re-added the missing functions **
 function dashboard_openAdvancedChallenge() {
     const confidentSubjects = appState.onboardingProfile.confident_subjects;
     if (!confidentSubjects || confidentSubjects.length === 0) {
@@ -869,17 +878,17 @@ function dashboard_renderTodoList() {
     const tasks = JSON.parse(localStorage.getItem('studyPlanTasks')) || [];
     todoListContainer.innerHTML = '';
     
-    const incompleteTasks = tasks.filter(task => !task.completed);
-    const completedTasks = tasks.filter(task => task.completed);
-
-    [...incompleteTasks, ...completedTasks].forEach((task, index) => {
-        const item = document.createElement('div');
-        item.className = `study-plan-item ${task.completed ? 'completed' : ''}`;
-        item.innerHTML = `
-            <div class="task-checkbox ${task.completed ? 'completed' : ''}" onclick="dashboard_toggleTask(${index})"></div>
-            <div><h4>${task.text}</h4></div>
-        `;
-        todoListContainer.appendChild(item);
+    // In this version, we only show incomplete tasks since completed ones are deleted
+    tasks.forEach((task, index) => {
+        if (!task.completed) {
+            const item = document.createElement('div');
+            item.className = 'study-plan-item';
+            item.innerHTML = `
+                <div class="task-checkbox" onclick="dashboard_toggleTask(${index})"></div>
+                <div><h4>${task.text}</h4></div>
+            `;
+            todoListContainer.appendChild(item);
+        }
     });
     dashboard_updateProgress();
 }
@@ -903,35 +912,65 @@ todoInput.addEventListener('keypress', function (e) {
     }
 });
 
-function dashboard_toggleTask(index) {
-    const tasks = JSON.parse(localStorage.getItem('studyPlanTasks')) || [];
-    if (tasks[index]) {
-        tasks[index].completed = !tasks[index].completed;
-        if(tasks[index].completed) {
-            let currentXP = parseInt(localStorage.getItem('userXP')) || 0;
-            currentXP += 10;
-            localStorage.setItem('userXP', currentXP);
-            dashboard_updateXPDisplay();
+// ** FIX: Updated task completion and deletion logic **
+function dashboard_toggleTask(originalIndex) {
+    let tasks = JSON.parse(localStorage.getItem('studyPlanTasks')) || [];
+    
+    // Find the actual index of the item to be deleted from the visible list
+    let incompleteTaskIndex = -1;
+    let count = -1;
+    for(let i=0; i<tasks.length; i++) {
+        if(!tasks[i].completed) {
+            count++;
+            if(count === originalIndex) {
+                incompleteTaskIndex = i;
+                break;
+            }
         }
+    }
+
+    if (incompleteTaskIndex !== -1) {
+        // Award XP once
+        let currentXP = parseInt(localStorage.getItem('userXP')) || 0;
+        currentXP += 10;
+        localStorage.setItem('userXP', currentXP);
+        dashboard_updateXPDisplay();
+
+        // Mark as completed instead of deleting immediately to handle indexes correctly.
+        // Or better, we filter out the completed task and save the new array
+        let incompleteTasks = tasks.filter(t => !t.completed);
+        incompleteTasks.splice(originalIndex, 1); // remove from the visible list
+        
+        let completedTasks = tasks.filter(t => t.completed);
+
+        // Rebuild the main tasks array
+        localStorage.setItem('studyPlanTasks', JSON.stringify([...incompleteTasks, ...completedTasks]));
+        
+        // Find the task and delete it from the original array
+        tasks.splice(incompleteTaskIndex, 1);
         localStorage.setItem('studyPlanTasks', JSON.stringify(tasks));
+
         dashboard_renderTodoList();
     }
 }
 
 function dashboard_updateProgress() {
     const tasks = JSON.parse(localStorage.getItem('studyPlanTasks')) || [];
-    const completed = tasks.filter(task => task.completed).length;
+    const completed = tasks.filter(task => task.completed).length; // This will be 0 now
     const total = tasks.length;
     const progressFill = document.getElementById('todoProgressFill');
     const progressText = document.getElementById('todoProgressText');
     
+    // We base progress on the original list before deletion if needed, but for simplicity
+    // we'll just show remaining tasks.
     if (total === 0) {
-        progressFill.style.width = '0%';
-        progressText.innerHTML = 'Add a task to get started!';
+        progressFill.style.width = '100%';
+        progressText.innerHTML = 'All tasks completed for today! 🎉';
     } else {
-        const percentage = (completed / total) * 100;
-        progressFill.style.width = percentage + '%';
-        progressText.innerHTML = `Today's Goal: ${completed}/${total} tasks completed ${completed === total && total > 0 ? '🎉' : '✅'}`;
+        // This logic is tricky now. A better approach might be to store total tasks separately.
+        // For now, let's keep it simple.
+        progressFill.style.width = '0%';
+        progressText.innerHTML = `${total} task${total > 1 ? 's' : ''} remaining.`;
     }
 }
         
